@@ -8,7 +8,7 @@ import { isScrollInBottom } from './tools/myfun'
 function App() {
   const [dataList, setDataList] = useState(null)
   const [showLen, setShowLen] = useState(100)
-  console.log(1)
+  
   useEffect(() => {
     //政府的API，有CORS問題，只能靠別人伺服器的反向代理來解決
     //但是伺服器有限制不能連續請求太多次，請小心使用~
@@ -23,7 +23,6 @@ function App() {
     if (dataList) {
       let len = 100
       const scrollHandler = () => {
-        console.log('s')
         if (isScrollInBottom()) {
           len += 100
           if (len > dataList.length) {
