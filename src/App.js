@@ -1,30 +1,37 @@
 import './App.css';
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import Table from './components/table/table'
 import Spinner from './components/spinner/spinner'
-import { isScrollInBottom } from './tools/myfun'
+import { isScrollInBottom } from './utils/scroll'
+import $ from "jquery";
+
+const url = "https://api.github.com/users/mschwarzmueller/repos";
 
 function App() {
   const [dataList, setDataList] = useState(null)
-  const [showLen, setShowLen] = useState(100)
+  const [showLen, setShowLen] = useState(10)
   
   useEffect(() => {
-    //政府的API，有CORS問題，只能靠別人伺服器的反向代理來解決
-    //但是伺服器有限制不能連續請求太多次，請小心使用~
-    axios('https://cors-anywhere.herokuapp.com/https://gis.taiwan.net.tw/XMLReleaseALL_public/scenic_spot_C_f.json').then(res => {
-      setDataList(res.data.XML_Head.Infos.Info.map(data => {
-        return { Id: data.Id, Region: data.Region, Town: data.Town, Name: data.Name }
-      }))
-    })
+    $.ajax(url).then((res) => {
+      setDataList(
+        res.map((data) => {
+          return {
+            id: data.id,
+            name: data.name,
+            html_url: data.html_url,
+            updated_at: data.updated_at,
+          };
+        })
+      );
+    });
   }, [])
 
   useEffect(() => {
     if (dataList) {
-      let len = 100
+      let len = 10
       const scrollHandler = () => {
         if (isScrollInBottom()) {
-          len += 100
+          len += 10
           if (len > dataList.length) {
             len = dataList.length
             window.removeEventListener('scroll', scrollHandler)
